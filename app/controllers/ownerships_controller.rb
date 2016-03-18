@@ -13,7 +13,10 @@ class OwnershipsController < ApplicationController
       begin
         # TODO 商品情報の取得 Amazon::Ecs.item_lookupを用いてください
         response = {}
-      rescue Amazon::RequestError => e
+        Amazon::Ecs.item_lookup(params[:asin], :response_group => 'Medium', :country => 'jp')
+        current_user.want(@item) if params[:type] == "Want"
+        current_user.have(@item) if params[:type] == "Have"
+        rescue Amazon::RequestError => e
         return render :js => "alert('#{e.message}')"
       end
 
